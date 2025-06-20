@@ -1,0 +1,183 @@
+.products-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  justify-content: center;
+  padding: 2rem;
+}
+
+/* Envoltura de cada tarjeta + info */
+.product-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 220px;
+}
+
+.product-features {
+  list-style: none;
+  padding: 0.5rem;
+  margin: 0;
+  text-align: left;
+  font-size: 0.9rem;
+  color: #333;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+
+
+.product-features li {
+  background: #f4f4f4;
+  padding: 0.3rem 0.5rem;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+
+/* Tarjeta base */
+.card {
+  position: relative;
+  width: 100%;
+  height: 280px;
+  perspective: 1000px;
+  cursor: pointer;
+  transition: transform 0.3s ease; /* 🔥 transiciones suaves */
+}
+
+.card:hover {
+  transform: scale(1.1); /* 🔍 agranda un 5% */
+  z-index: 10; /* se pone por encima del resto */
+}
+
+
+.card-content {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+}
+
+.card.flipped .card-content {
+  transform: rotateY(180deg);
+}
+
+/* Frente */
+.card-front, .card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.card-front {
+  transform: rotateY(0deg);
+  background-size: cover;
+  background-position: center;
+}
+
+.card-back {
+  background: #fff;
+  transform: rotateY(180deg);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* 👈 Para que el botón quede abajo */
+  align-items: center;
+  padding: 1rem;
+  text-align: center;
+  overflow: hidden; /* 👈 Oculta lo que sobresalga */
+  box-sizing: border-box;
+}
+
+.product-features {
+  flex: 1; /* 👈 Ocupa todo el espacio disponible */
+  width: 100%;
+  overflow-y: auto; /* 👈 Scroll vertical */
+  padding: 0 0.5rem;
+  margin-bottom: 1rem;
+  text-align: left;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* Scroll más prolijo */
+.product-features::-webkit-scrollbar {
+  width: 5px;
+}
+.product-features::-webkit-scrollbar-thumb {
+  background-color: #bbb;
+  border-radius: 6px;
+}
+
+
+
+.card.flipped .blob,
+.card.flipped .blob2 {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Información por fuera de la tarjeta */
+.product-info {
+  margin-top: 0.6rem;
+  text-align: center;
+}
+
+.product-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #222;
+  margin: 0.2rem 0;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.product-price {
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #e63946;
+  background: #ffe6e6;
+  padding: 0.2rem 0.6rem;
+  border-radius: 6px;
+  display: inline-block;
+}
+
+/* Botón */
+.product-link {
+  margin-top: 10px;
+  background: #333;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 6px;
+  text-decoration: none;
+}
+
+/* Animación opcional (la dejé por si la usás) */
+@keyframes blob-bounce {
+  0% {
+    transform: translate(-100%, -100%) translate3d(0, 0, 0);
+  }
+  25% {
+    transform: translate(-100%, -100%) translate3d(100%, 0, 0);
+  }
+  50% {
+    transform: translate(-100%, -100%) translate3d(100%, 100%, 0);
+  }
+  75% {
+    transform: translate(-100%, -100%) translate3d(0, 100%, 0);
+  }
+  100% {
+    transform: translate(-100%, -100%) translate3d(0, 0, 0);
+  }
+}
