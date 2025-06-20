@@ -1,0 +1,324 @@
+import React from "react";
+import { db } from "../FireBaseConfig";
+import { collection, setDoc, doc } from "firebase/firestore";
+
+// Tu JSON de productos
+const productos = 
+[
+  {
+    "id": 1,
+    "name": "Apple iPhone 13 (128 GB) - Rojo",
+    "price": 1473000,
+    "description": "Memoria RAM: 4 GB | Pantalla Super Retina XDR de 6.1 pulgadas.(1) | Modo Cine con baja profundidad de campo y cambios de enfoque automáticos en tus videos. | Sistema avanzado de dos cámaras de 12 MP (gran angular y ultra gran angular) con Estilos Fotográficos HDR Inteligente 4 modo Noche y grabación de video 4K HDR en Dolby Vision. | Cámara frontal TrueDepth de 12 MP con modo Noche y grabación de video 4K HDR en Dolby Vision. | Chip A15 Bionic para un rendimiento fuera de serie. | Hasta 19 horas de reproducción de video.(2) | Diseño resistente con Ceramic Shield. | Resistencia al agua IP68 líder en la industria.(3) | iOS 15 con nuevas funcionalidades para aprovechar tu iPhone al máximo.(4) | Compatibilidad con accesorios MagSafe que se acoplan fácilmente a tu iPhone y permiten una carga inalámbrica más rápida.(5)",
+    "image": "https://http2.mlstatic.com/D_NQ_NP_834059-MLA47781378504_102021-O.webp",
+    "url": "https://www.mercadolibre.com.ar/apple-iphone-13-128-gb-productred/p/MLA18500852"
+  },
+  {
+    "id": 2,
+    "name": "Apple iPhone 13 (128 GB) - Blanco estelar",
+    "price": 1070345,
+    "description": "Memoria RAM: 4 GB | Pantalla Super Retina XDR de 6.1 pulgadas.(1) | Modo Cine con baja profundidad de campo y cambios de enfoque automáticos en tus videos. | Sistema avanzado de dos cámaras de 12 MP (gran angular y ultra gran angular) con Estilos Fotográficos HDR Inteligente 4 modo Noche y grabación de video 4K HDR en Dolby Vision. | Cámara frontal TrueDepth de 12 MP con modo Noche y grabación de video 4K HDR en Dolby Vision. | Chip A15 Bionic para un rendimiento fuera de serie. | Hasta 19 horas de reproducción de video.(2) | Diseño resistente con Ceramic Shield. | Resistencia al agua IP68 líder en la industria.(3) | iOS 15 con nuevas funcionalidades para aprovechar tu iPhone al máximo.(4) | Compatibilidad con accesorios MagSafe que se acoplan fácilmente a tu iPhone y permiten una carga inalámbrica más rápida.(5)",
+    "image": "https://http2.mlstatic.com/D_NQ_NP_736168-MLA47781742030_102021-O.webp",
+    "url": "https://www.mercadolibre.com.ar/apple-iphone-13-128-gb-blanco-estelar/p/MLA18500855"
+  },
+  {
+    "id": 3,
+    "name": "Apple iPhone 13 (128 GB) - Rosa",
+    "price": 1188000,
+    "description": "Memoria RAM: 4 GB | Pantalla Super Retina XDR de 6.1 pulgadas.(1) | Modo Cine con baja profundidad de campo y cambios de enfoque automáticos en tus videos. | Sistema avanzado de dos cámaras de 12 MP (gran angular y ultra gran angular) con Estilos Fotográficos HDR Inteligente 4 modo Noche y grabación de video 4K HDR en Dolby Vision. | Cámara frontal TrueDepth de 12 MP con modo Noche y grabación de video 4K HDR en Dolby Vision. | Chip A15 Bionic para un rendimiento fuera de serie. | Hasta 19 horas de reproducción de video.(2) | Diseño resistente con Ceramic Shield. | Resistencia al agua IP68 líder en la industria.(3) | iOS 15 con nuevas funcionalidades para aprovechar tu iPhone al máximo.(4) | Compatibilidad con accesorios MagSafe que se acoplan fácilmente a tu iPhone y permiten una carga inalámbrica más rápida.(5)",
+    "image": "https://http2.mlstatic.com/D_NQ_NP_654080-MLA47781882564_102021-O.webp",
+    "url": "https://www.mercadolibre.com.ar/apple-iphone-13-128-gb-rosa/p/MLA18500849"
+  },
+  {
+    "id": 4,
+    "name": "Apple iPhone 13 (128 GB) - Verde",
+    "price": 1240000,
+    "description": "Memoria RAM: 4 GB | Pantalla Super Retina XDR de 6.1 pulgadas.(1) | Modo Cine con baja profundidad de campo y cambios de enfoque automáticos en tus videos. | Sistema avanzado de dos cámaras de 12 MP (gran angular y ultra gran angular) con Estilos Fotográficos HDR Inteligente 4 modo Noche y grabación de video 4K HDR en Dolby Vision. | Cámara frontal TrueDepth de 12 MP con modo Noche y grabación de video 4K HDR en Dolby Vision. | Chip A15 Bionic para un rendimiento fuera de serie. | Hasta 19 horas de reproducción de video.(2) | Diseño resistente con Ceramic Shield. | Resistencia al agua IP68 líder en la industria.(3) | iOS 15 con nuevas funcionalidades para aprovechar tu iPhone al máximo.(4) | Compatibilidad con accesorios MagSafe que se acoplan fácilmente a tu iPhone y permiten una carga inalámbrica más rápida.(5)",
+    "image": "https://http2.mlstatic.com/D_NQ_NP_736376-MLA49590060561_042022-O.webp",
+    "url": "https://www.mercadolibre.com.ar/apple-iphone-13-128-gb-verde/p/MLA22372834"
+  },
+  {
+    "id": 5,
+    "name": "Apple iPhone 13 (128 GB) - Medianoche",
+    "price": 1115704.08,
+    "description": "Memoria RAM: 4 GB | Pantalla Super Retina XDR de 6.1 pulgadas.(1) | Modo Cine con baja profundidad de campo y cambios de enfoque automáticos en tus videos. | Sistema avanzado de dos cámaras de 12 MP (gran angular y ultra gran angular) con Estilos Fotográficos HDR Inteligente 4 modo Noche y grabación de video 4K HDR en Dolby Vision. | Cámara frontal TrueDepth de 12 MP con modo Noche y grabación de video 4K HDR en Dolby Vision. | Chip A15 Bionic para un rendimiento fuera de serie. | Hasta 19 horas de reproducción de video.(2) | Diseño resistente con Ceramic Shield. | Resistencia al agua IP68 líder en la industria.(3) | iOS 15 con nuevas funcionalidades para aprovechar tu iPhone al máximo.(4) | Compatibilidad con accesorios MagSafe que se acoplan fácilmente a tu iPhone y permiten una carga inalámbrica más rápida.(5)",
+    "image": "https://http2.mlstatic.com/D_NQ_NP_973345-MLA47781591382_102021-O.webp",
+    "url": "https://www.mercadolibre.com.ar/apple-iphone-13-128-gb-medianoche-distribuidor-autorizado/p/MLA18500844"
+  },
+  {
+    "id": 6,
+    "name": "Apple iPhone 14 (512 GB) - Medianoche",
+    "price": 1889999,
+    "description": "Pantalla Super Retina XDR de 6.1 pulgadas.(1) | Sistema avanzado de cámaras para tomar mejores fotos en cualquier condición de luz. | Modo Cine ahora en 4K Dolby Vision de hasta 30cps. | Modo Acción para lograr videos estables aún con cámara en mano. | Detección de Choques(2) una funcionalidad de seguridad que pide ayuda cuando tú no puedes. | Batería para todo el día y hasta 26 horas de reproducción de vídeo.(3) | A15 Bionic con GPU e 5 núcleos para un rendimiento fuera de serie. Red 5G ultrarrápida.(4) | Ceramic Shield y resistencia al agua características de durabilidad líderes en la industria.(5) | iOS 16 ofrece aún más opciones de personalización y más formas de comunicarse y compartir.(6)",
+    "image": "https://http2.mlstatic.com/D_NQ_NP_881016-MLM51559383738_092022-O.webp",
+    "url": "https://www.mercadolibre.com.ar/apple-iphone-14-512-gb-medianoche/p/MLA19615351"
+  },
+  {
+    "id": 7,
+    "name": "Apple iPhone 14 (512 GB) - Blanco estelar",
+    "price": 1889999,
+    "description": "Pantalla Super Retina XDR de 6.1 pulgadas.(1) | Sistema avanzado de cámaras para tomar mejores fotos en cualquier condición de luz. | Modo Cine ahora en 4K Dolby Vision de hasta 30cps. | Modo Acción para lograr videos estables aún con cámara en mano. | Detección de Choques(2) una funcionalidad de seguridad que pide ayuda cuando tú no puedes. | Batería para todo el día y hasta 26 horas de reproducción de vídeo.(3) | A15 Bionic con GPU e 5 núcleos para un rendimiento fuera de serie. Red 5G ultrarrápida.(4) | Ceramic Shield y resistencia al agua características de durabilidad líderes en la industria.(5) | iOS 16 ofrece aún más opciones de personalización y más formas de comunicarse y compartir.(6)",
+    "image": "https://http2.mlstatic.com/D_NQ_NP_918579-MLM51559384401_092022-O.webp",
+    "url": "https://www.mercadolibre.com.ar/apple-iphone-14-512-gb-blanco-estelar/p/MLA19615363"
+  },
+  {
+    "id": 8,
+    "name": "Apple iPhone 14 (512 GB) - Azul",
+    "price": 1889999,
+    "description": "Pantalla Super Retina XDR de 6.1 pulgadas.(1) | Sistema avanzado de cámaras para tomar mejores fotos en cualquier condición de luz. | Modo Cine ahora en 4K Dolby Vision de hasta 30cps. | Modo Acción para lograr videos estables aún con cámara en mano. | Detección de Choques(2) una funcionalidad de seguridad que pide ayuda cuando tú no puedes. | Batería para todo el día y hasta 26 horas de reproducción de vídeo.(3) | A15 Bionic con GPU e 5 núcleos para un rendimiento fuera de serie. Red 5G ultrarrápida.(4) | Ceramic Shield y resistencia al agua características de durabilidad líderes en la industria.(5) | iOS 16 ofrece aún más opciones de personalización y más formas de comunicarse y compartir.(6)",
+    "image": "https://http2.mlstatic.com/D_NQ_NP_864844-MLM51559388062_092022-O.webp",
+    "url": "https://www.mercadolibre.com.ar/apple-iphone-14-512-gb-azul/p/MLA19615371"
+  },
+  {
+    "id": 9,
+    "name": "Apple iPhone 14 (512 GB) - Morado",
+    "price": 1399990,
+    "description": "Pantalla Super Retina XDR de 6.1 pulgadas.(1) | Sistema avanzado de cámaras para tomar mejores fotos en cualquier condición de luz. | Modo Cine ahora en 4K Dolby Vision de hasta 30cps. | Modo Acción para lograr videos estables aún con cámara en mano. | Detección de Choques(2) una funcionalidad de seguridad que pide ayuda cuando tú no puedes. | Batería para todo el día y hasta 26 horas de reproducción de vídeo.(3) | A15 Bionic con GPU e 5 núcleos para un rendimiento fuera de serie. Red 5G ultrarrápida.(4) | Ceramic Shield y resistencia al agua características de durabilidad líderes en la industria.(5) | iOS 16 ofrece aún más opciones de personalización y más formas de comunicarse y compartir.(6)",
+    "image": "https://http2.mlstatic.com/D_NQ_NP_786356-MLM51559385272_092022-O.webp",
+    "url": "https://www.mercadolibre.com.ar/apple-iphone-14-512-gb-morado/p/MLA19615374"
+  },
+  {
+    "id": 10,
+    "name": "Apple iPhone 15 (128 GB) - Verde",
+    "price": 1534999,
+    "description": "Memoria RAM: 6 GB | La Dynamic Island te muestra alertas y actividades en vivo | Diseño innovador con pantalla Super Retina XDR | Cámara gran angular de 48 MP con teleobjetivo de 2x | Retratos de última generación | Superpotente chip A16 Bionic | Conexión USB-C | Funcionalidad esencial de seguridad con detección de choques para pedir ayuda | Con tecnologías de privacidad que te ayudan a mantener el control de tus datos",
+    "image": "https://http2.mlstatic.com/D_NQ_NP_767731-MLA71782898424_092023-O.webp",
+    "url": "https://www.mercadolibre.com.ar/apple-iphone-15-128-gb-verde/p/MLA27172671"
+  },
+  {
+    "id": 11,
+    "name": "Apple iPhone 15 (128 GB) - Rosa",
+    "price": 1455000,
+    "description": "Memoria RAM: 6 GB | La Dynamic Island te muestra alertas y actividades en vivo | Diseño innovador con pantalla Super Retina XDR | Cámara gran angular de 48 MP con teleobjetivo de 2x | Retratos de última generación | Superpotente chip A16 Bionic | Conexión USB-C | Funcionalidad esencial de seguridad con detección de choques para pedir ayuda | Con tecnologías de privacidad que te ayudan a mantener el control de tus datos",
+    "image": "https://http2.mlstatic.com/D_NQ_NP_958009-MLA71782868134_092023-O.webp",
+    "url": "https://www.mercadolibre.com.ar/apple-iphone-15-128-gb-rosa/p/MLA27172678"
+  },
+  {
+    "id": 12,
+    "name": "Apple iPhone 15 (128 GB) - Azul",
+    "price": 1490090,
+    "description": "Memoria RAM: 6 GB | La Dynamic Island te muestra alertas y actividades en vivo | Diseño innovador con pantalla Super Retina XDR | Cámara gran angular de 48 MP con teleobjetivo de 2x | Retratos de última generación | Superpotente chip A16 Bionic | Conexión USB-C | Funcionalidad esencial de seguridad con detección de choques para pedir ayuda | Con tecnologías de privacidad que te ayudan a mantener el control de tus datos",
+    "image": "https://http2.mlstatic.com/D_NQ_NP_759471-MLA71782897602_092023-O.webp",
+    "url": "https://www.mercadolibre.com.ar/apple-iphone-15-128-gb-azul/p/MLA27172667"
+  },
+  {
+    "id": 13,
+    "name": "Apple iPhone 15 128 GB Negro",
+    "price": 1490000,
+    "description": "Memoria RAM: 6 GB | La Dynamic Island te muestra alertas y actividades en vivo | Diseño innovador con pantalla Super Retina XDR | Cámara gran angular de 48 MP con teleobjetivo de 2x | Retratos de última generación | Superpotente chip A16 Bionic | Conexión USB-C | Funcionalidad esencial de seguridad con detección de choques para pedir ayuda | Con tecnologías de privacidad que te ayudan a mantener el control de tus datos",
+    "image": "https://http2.mlstatic.com/D_NQ_NP_779617-MLA71782867320_092023-O.webp",
+    "url": "https://www.mercadolibre.com.ar/apple-iphone-15-128-gb-negro/p/MLA27172677"
+  },
+  {
+    "id": 14,
+    "name": "Apple iPhone 15 (256 GB) - Negro",
+    "price": 1754043,
+    "description": "Memoria RAM: 6 GB | La Dynamic Island te muestra alertas y actividades en vivo | Diseño innovador con pantalla Super Retina XDR | Cámara gran angular de 48 MP con teleobjetivo de 2x | Retratos de última generación | Superpotente chip A16 Bionic | Conexión USB-C | Funcionalidad esencial de seguridad con detección de choques para pedir ayuda | Con tecnologías de privacidad que te ayudan a mantener el control de tus datos",
+    "image": "https://http2.mlstatic.com/D_NQ_NP_779617-MLA71782867320_092023-O.webp",
+    "url": "https://www.mercadolibre.com.ar/apple-iphone-15-256-gb-negro/p/MLA27172669"
+  },
+  {
+    "id": 15,
+    "name": "Apple iPhone 16 (128 GB) - Ultramarino",
+    "price": 1740999,
+    "description": "Memoria RAM: 8 GB | Control de la cámara. | Capturas más amplias y detalladas. | Estilos fotográficos. | Chip A18 superpoderoso. | Mayor duración de la batería. | Diseñado para durar. | Botón de acción. | Personaliza tu iPhone. | Funcionalidades esenciales de seguridad.",
+    "image": "https://http2.mlstatic.com/D_NQ_NP_975004-MLU78878972160_092024-O.webp",
+    "url": "https://www.mercadolibre.com.ar/apple-iphone-16-128-gb-ultramarino/p/MLA40287800"
+  },
+  {
+    "id": 16,
+    "name": "Apple iPhone 16 (256 GB) - Verde azulado",
+    "price": 2149000,
+    "description": "Memoria RAM: 8 GB | Control de la cámara. | Capturas más amplias y detalladas. | Estilos fotográficos. | Chip A18 superpoderoso. | Mayor duración de la batería. | Diseñado para durar. | Botón de acción. | Personaliza tu iPhone. | Funcionalidades esenciales de seguridad.",
+    "image": "https://http2.mlstatic.com/D_NQ_NP_880148-MLU78878920462_092024-O.webp",
+    "url": "https://www.mercadolibre.com.ar/apple-iphone-16-256-gb-verde-azulado/p/MLA40287804"
+  },
+  {
+    "id": 17,
+    "name": "Apple iPhone 16 (256 GB) - Blanco",
+    "price": 2149000,
+    "description": "Memoria RAM: 8 GB | Control de la cámara. | Capturas más amplias y detalladas. | Estilos fotográficos. | Chip A18 superpoderoso. | Mayor duración de la batería. | Diseñado para durar. | Botón de acción. | Personaliza tu iPhone. | Funcionalidades esenciales de seguridad.",
+    "image": "https://http2.mlstatic.com/D_NQ_NP_943288-MLU78891932006_092024-O.webp",
+    "url": "https://www.mercadolibre.com.ar/apple-iphone-16-256-gb-blanco/p/MLA40287811"
+  },
+  {
+    "id": 18,
+    "name": "Apple iPhone 16 (256 GB) - Rosa",
+    "price": 2099999,
+    "description": "Memoria RAM: 8 GB | Control de la cámara. | Capturas más amplias y detalladas. | Estilos fotográficos. | Chip A18 superpoderoso. | Mayor duración de la batería. | Diseñado para durar. | Botón de acción. | Personaliza tu iPhone. | Funcionalidades esenciales de seguridad.",
+    "image": "https://http2.mlstatic.com/D_NQ_NP_697833-MLU79129664311_092024-O.webp",
+    "url": "https://www.mercadolibre.com.ar/apple-iphone-16-256-gb-rosa/p/MLA40287790"
+  },
+  {
+    "id": 19,
+    "name": "Apple iPhone 16 (256 GB) - Ultramarino",
+    "price": 2149000,
+    "description": "Memoria RAM: 8 GB | Control de la cámara. | Capturas más amplias y detalladas. | Estilos fotográficos. | Chip A18 superpoderoso. | Mayor duración de la batería. | Diseñado para durar. | Botón de acción. | Personaliza tu iPhone. | Funcionalidades esenciales de seguridad.",
+    "image": "https://http2.mlstatic.com/D_NQ_NP_975004-MLU78878972160_092024-O.webp",
+    "url": "https://www.mercadolibre.com.ar/apple-iphone-16-256-gb-ultramarino/p/MLA40287813"
+  },
+  {
+    "id": 20,
+    "name": "Apple iPhone 16 (256 GB) - Negro",
+    "price": 2149000,
+    "description": "Memoria RAM: 8 GB | Control de la cámara. | Capturas más amplias y detalladas. | Estilos fotográficos. | Chip A18 superpoderoso. | Mayor duración de la batería. | Diseñado para durar. | Botón de acción. | Personaliza tu iPhone. | Funcionalidades esenciales de seguridad.",
+    "image": "https://http2.mlstatic.com/D_NQ_NP_677076-MLU79116568655_092024-O.webp",
+    "url": "https://www.mercadolibre.com.ar/apple-iphone-16-256-gb-negro/p/MLA40287796"
+  },
+  {
+    "id": 21,
+    "name": "Iphone 16 Pro Max (512 GB) - Black Titanium",
+    "price": 3499999.99,
+    "description": "Memoria RAM: 8 GB | Memoria interna: 512 GB",
+    "image": "https://http2.mlstatic.com/D_NQ_NP_724875-MLA86043247309_062025-O.webp",
+    "url": "https://articulo.mercadolibre.com.ar/MLA-2113857574-iphone-16-pro-max-esim-caja-sellada-48-mp-512gb-8gb-ram-black-titanium-_JM"
+  },
+  {
+    "id": 22,
+    "name": "Iphone 16 Pro Max (512 GB) - Desert Titanium",
+    "price": 3499999.99,
+    "description": "Memoria RAM: 8 GB | Memoria interna: 512 GB",
+    "image": "https://http2.mlstatic.com/D_NQ_NP_991815-MLA86043239239_062025-O.webp",
+    "url": "https://articulo.mercadolibre.com.ar/MLA-1504918013-iphone-16-pro-max-esim-caja-sellada-48-mp-512gb-8gb-ram-desert-titanium-_JM"
+  },
+  {
+    "id": 23,
+    "name": "Iphone 16 Pro Max (512 GB) - White Titanium",
+    "price": 3499999.99,
+    "description": "Memoria RAM: 8 GB | Memoria interna: 512 GB",
+    "image": "https://http2.mlstatic.com/D_NQ_NP_908317-MLA85731431776_062025-O.webp",
+    "url": "https://articulo.mercadolibre.com.ar/MLA-1504879115-iphone-16-pro-max-esim-caja-sellada-48-mp-512gb-8gb-ram-white-titanium-_JM"
+  },
+ {
+    "id": 24,
+    "name": "Iphone 16 Pro Max (512GB) - Natural",
+    "price": 3499999.99,
+    "description": "Memoria RAM: 8 GB | Memoria interna: 512 GB",
+    "image": "https://http2.mlstatic.com/D_NQ_NP_603196-MLA85623608842_062025-O.webp",
+    "url": "https://articulo.mercadolibre.com.ar/MLA-1504411785-iphone-16-pro-max-esim-caja-sellada-48-mp-512gb-8gb-ram-natural-_JM"
+  },
+  {
+    "id": 25,
+    "name": "Samsung Galaxy S25 (256 GB) - Navy",
+    "price": 1699999,
+    "description": "Memoria RAM: 12 GB | Dispositivo desbloqueado para que elijas la compañía telefónica que prefieras. | Compatible con redes 5G. | Pantalla de 6.2\". | Memoria interna de 256GB.",
+    "image": "https://http2.mlstatic.com/D_NQ_NP_975071-MLA82294482013_022025-O.webp",
+    "url": "https://www.mercadolibre.com.ar/samsung-galaxy-s25-256-gb-navy/p/MLA45502223"
+  },
+  {
+    "id": 26,
+    "name": "Samsung Galaxy S25 (256 GB) - Silver Shadow",
+    "price": 1950000,
+    "description": "Memoria RAM: 12 GB | Dispositivo desbloqueado para que elijas la compañía telefónica que prefieras. | Compatible con redes 5G. | Pantalla Dynamic AMOLED 2X de 6.2\". | Tiene 3 cámaras traseras de 50Mpx/10Mpx/12Mpx. | Procesador Snapdragon 8 Elite Octa-Core de 4.47GHz con 12GB de RAM. | Batería de 4000mAh con carga inalámbrica. | Memoria interna de 256GB. | Con reconocimiento facial y sensor de huella dactilar. | Tarjeta eSIM incluida.",
+    "image": "https://http2.mlstatic.com/D_NQ_NP_959158-MLA82185242973_012025-O.webp",
+    "url": "https://www.mercadolibre.com.ar/samsung-galaxy-s25-256gb-silver-shadow/p/MLA45520367"
+  },
+  {
+    "id": 27,
+    "name": "Samsung Galaxy S25 (256 GB) - Mint",
+    "price": 1572456,
+    "description": "Memoria RAM: 12 GB | Dispositivo desbloqueado para que elijas la compañía telefónica que prefieras. | Compatible con redes 5G. | Pantalla Dynamic AMOLED 2X de 6.2\". | Tiene 3 cámaras traseras de 50Mpx/10Mpx/12Mpx. | Cámaras delanteras de 12Mpx. | Procesador Snapdragon 8 Elite Octa-Core de 4.47GHz con 12GB de RAM. | Batería de 4000mAh con carga inalámbrica. | Memoria interna de 256GB. | Con reconocimiento facial y sensor de huella dactilar. | Tarjeta eSIM incluida.",
+    "image": "https://http2.mlstatic.com/D_NQ_NP_762090-MLA82185895079_012025-O.webp",
+    "url": "https://www.mercadolibre.com.ar/samsung-galaxy-s25-256gb-mint/p/MLA45502235"
+  },
+  {
+    "id": 28,
+    "name": "Samsung Galaxy S25 (128 GB) - Navy",
+    "price": 1348900,
+    "description": "Memoria RAM: 12 GB | Dispositivo desbloqueado para que elijas la compañía telefónica que prefieras. | Compatible con redes 5G. | Pantalla Dynamic AMOLED 2X de 6.2\". | Tiene 3 cámaras traseras de 50Mpx/10Mpx/12Mpx. | Cámaras delanteras de 12Mpx. | Procesador Snapdragon 8 Elite Octa-Core de 4.47GHz con 12GB de RAM. | Batería de 4000mAh con carga inalámbrica. | Memoria interna de 128GB. | Con reconocimiento facial y sensor de huella dactilar. | Tarjeta eSIM incluida.",
+    "image": "https://http2.mlstatic.com/D_NQ_NP_975071-MLA82294482013_022025-O.webp",
+    "url": "https://www.mercadolibre.com.ar/samsung-galaxy-s25-128g-navy/p/MLA45502237"
+  },
+  {
+    "id": 29,
+    "name": "Samsung Galaxy S25 Plus (256 GB) - Azul",
+    "price": 1594000,
+    "description": "Memoria RAM: 12 GB | Dispositivo liberado para que elijas la compañía telefónica que prefieras. | Compatible con redes 5G. | Tiene 3 cámaras traseras de 50Mpx/10Mpx/12Mpx. | Cámaras delanteras de 12Mpx. | Batería de 4.9 Ah con carga inalámbrica. | Memoria interna de 256GB. | Con reconocimiento facial y sensor de huella dactilar. | Tarjeta eSIM incluida.",
+    "image": "https://http2.mlstatic.com/D_NQ_NP_868815-MLA83378388362_042025-O.webp",
+    "url": "https://www.mercadolibre.com.ar/samsung-galaxy-s25-plus-5g-con-doble-sim-256-gb-azul-12-gb-de-ram/p/MLA47839000"
+  },
+  {
+    "id": 30,
+    "name": "Samsung Galaxy S25 Plus (512 GB) - Icyblue",
+    "price": 2190200,
+    "description": "Memoria RAM: 12 GB | Dispositivo desbloqueado para que elijas la compañía telefónica que prefieras. | Compatible con redes 5G. | Pantalla de 6.7\". | Memoria interna de 512GB.",
+    "image": "https://http2.mlstatic.com/D_NQ_NP_816605-MLA82049847379_012025-O.webp",
+    "url": "https://www.mercadolibre.com.ar/samsung-galaxy-s25-plus-512gb-icyblue/p/MLA45501284"
+  },
+  {
+    "id": 31,
+    "name": "Samsung Galaxy S25 Plus (256 GB) - Navy",
+    "price": 2054999,
+    "description": "Memoria RAM: 12 GB | Dispositivo desbloqueado para que elijas la compañía telefónica que prefieras. | Compatible con redes 5G. | Pantalla de 6.7\". | Memoria interna de 256GB.",
+    "image": "https://http2.mlstatic.com/D_NQ_NP_675793-MLA82187633779_012025-O.webp",
+    "url": "https://www.mercadolibre.com.ar/samsung-galaxy-s25-plus-256gb-navy/p/MLA45513357"
+  },
+  {
+    "id": 32,
+    "name": "Samsung Galaxy S25 Plus (256 GB) - Silver Shadow",
+    "price": 1799999,
+    "description": "Memoria RAM: 12 GB | Dispositivo desbloqueado para que elijas la compañía telefónica que prefieras. | Compatible con redes 5G. | Pantalla Dynamic AMOLED 2X de 6.7\". | Tiene 3 cámaras traseras de 50Mpx/10Mpx/12Mpx. | Procesador Snapdragon 8 Elite Octa-Core de 4.47GHz con 12GB de RAM. | Batería de 4900mAh con carga inalámbrica. | Memoria interna de 256GB. | Con reconocimiento facial y sensor de huella dactilar. | Tarjeta eSIM incluida.",
+    "image": "https://http2.mlstatic.com/D_NQ_NP_789059-MLA82196421543_012025-O.webp",
+    "url": "https://www.mercadolibre.com.ar/samsung-galaxy-s25-plus-25612gb-silver-shadow/p/MLA45513966"
+  },
+  {
+    "id": 33,
+    "name": "Samsung Galaxy S25 Plus (256 GB) - Negro Azabache",
+    "price": 2630000,
+    "description": "Memoria RAM: 12 GB | Dispositivo desbloqueado para que elijas tu compañía telefónica preferida. | Compatible con redes 5G. | Pantalla AMOLED 2X dinámica de 6.7 pulgadas. | Cuenta con 3 cámaras traseras de 50Mpx/12Mpx/10Mpx. | Cámaras frontales de 12 Mpx. | Procesador Snapdragon 8 Elite Octa-Core de 3.3 GHz con 12 GB de RAM. | Batería de 4900 mAh con carga inalámbrica. | Memoria interna de 256 GB. | Con reconocimiento facial y sensor de huellas dactilares. | Tarjeta eSIM incluida.",
+    "image": "https://http2.mlstatic.com/D_NQ_NP_881416-MLA83035788403_032025-O.webp",
+    "url": "https://www.mercadolibre.com.ar/samsung-galaxy-s25-plus-5g-con-doble-sim-256-gb-negro-azabache-12-gb-de-ram/p/MLA47080995"
+  },
+  {
+    "id": 34,
+    "name": "Samsung Galaxy S25 Plus (256 GB) - Icyblue",
+    "price": 1415943,
+    "description": "Memoria RAM: 12 GB | Dispositivo desbloqueado para que elijas la compañía telefónica que prefieras. | Compatible con redes 5G. | Pantalla de 6.7\". | Memoria interna de 256GB.",
+    "image": "https://http2.mlstatic.com/D_NQ_NP_816605-MLA82049847379_012025-O.webp",
+    "url": "https://www.mercadolibre.com.ar/samsung-galaxy-s25-plus-256g-icyblue/p/MLA45513932"
+  },
+  {
+    "id": 35,
+    "name": "Samsung Galaxy S25 Plus (256 GB) - Mint",
+    "price": 1999999,
+    "description": "Memoria RAM: 12 GB | Dispositivo desbloqueado para que elijas la compañía telefónica que prefieras. | Compatible con redes 5G. | Pantalla Dynamic AMOLED 2X de 6.7\". | Tiene 3 cámaras traseras de 50Mpx/10Mpx/12Mpx. | Procesador Snapdragon 8 Elite Octa-Core de 4.47GHz con 12GB de RAM. | Batería de 4900mAh con carga inalámbrica. | Memoria interna de 256GB. | Con reconocimiento facial y sensor de huella dactilar. | Tarjeta eSIM incluida.",
+    "image": "https://http2.mlstatic.com/D_NQ_NP_613201-MLA81916449592_012025-O.webp",
+    "url": "https://www.mercadolibre.com.ar/samsung-galaxy-s25-plus-256gb-mint/p/MLA45514082"
+  },
+  {
+    "id": 36,
+    "name": "Samsung Galaxy S25 Ultra (512 GB) - Gris",
+    "price": 2574256,
+    "description": "Memoria RAM: 12 GB | Dispositivo liberado para que elijas la compañía telefónica que prefieras. | Compatible con redes 5G. | Pantalla de 6.9\". | Memoria interna de 512GB. | Con sensor de huella dactilar.",
+    "image": "https://http2.mlstatic.com/D_NQ_NP_782782-MLA84346335693_052025-O.webp",
+    "url": "https://www.mercadolibre.com.ar/samsung-galaxy-s25-ultra-5g-dual-sim-512-gb-gris-12-gb-ram/p/MLA48955512"
+  },
+  {
+    "id": 37,
+    "name": "Samsung Galaxy S25 Ultra (512 GB) - Azul Acero",
+    "price": 2473933,
+    "description": "Memoria RAM: 12 GB | Dispositivo liberado para que elijas la compañía telefónica que prefieras. | Compatible con redes 5G. | Pantalla de 6.9\". | Memoria interna de 512GB. | Con sensor de huella dactilar.",
+    "image": "https://http2.mlstatic.com/D_NQ_NP_682257-MLA84050923792_052025-O.webp",
+    "url": "https://www.mercadolibre.com.ar/samsung-galaxy-s25-ultra-5g-dual-sim-512-gb-azul-acero-12-gb-ram/p/MLA48955692"
+  }
+]
+
+export default function SubirProductos() {
+  const subirDatos = async () => {
+    const coleccion = collection(db, "productos");
+
+    for (const producto of productos) {
+      const docRef = doc(coleccion, producto.id.toString());
+      await setDoc(docRef, producto);
+      console.log(`Producto ${producto.name} cargado`);
+    }
+
+    alert("¡Todos los productos fueron cargados!");
+  };
+
+  return (
+    <div>
+      <button onClick={subirDatos}>Subir productos a Firebase</button>
+    </div>
+  );
+}
